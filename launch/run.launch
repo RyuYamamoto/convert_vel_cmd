@@ -1,0 +1,16 @@
+<launch>
+	<node pkg="convert_vel_cmd" type="convert_vel_cmd_node" name="convert_vel_cmd_node" output="screen">
+		<param name="cmd_vel_topic" value="convert_cmd_vel"/>
+	</node>
+
+	<node pkg="nodelet" type="nodelet" name="velocity_smoother_manager" args="manager"/>
+	<include file="$(find yocs_velocity_smoother)/launch/velocity_smoother.launch">
+		<arg name="node_name" value="velocity_smoother"/>
+		<arg name="nodelet_manager_name" value="velocity_smoother_manager"/>
+		<arg name="config_file" value="$(find tsukuba_bringup)/config/velocity_smoother/yocs_velocity_smoother.yaml" />
+		<arg name="raw_cmd_vel_topic" value="convert_cmd_vel" />
+		<arg name="smooth_cmd_vel_topic" value="/base/diff_drive_controller/cmd_vel" />
+		<arg name="robot_cmd_vel_topic" value="/base/diff_drive_controller/cmd_vel" />
+		<arg name="odom_topic" value="/base/diff_drive_controller/odom" />
+	</include>
+</launch>
