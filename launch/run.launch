@@ -3,12 +3,26 @@
 		<param name="cmd_vel_topic" value="convert_cmd_vel"/>
 	</node>
 
+	<!--include file="$(find tsukuba_bringup)/launch/test_safety_limiter.launch" /-->
+
+	<!--node pkg="white_line_stop_behavior" name="white_line_stop_behavior" type="white_line_stop_behavior_node"/-->
+	<node name="collision_velocity_node" pkg="cob_collision_velocity_filter" type="collision_velocity_filter" output="screen">
+		<remap from="~teleop_twist" to="/convert_cmd_vel"/>
+	  <remap from="~obstacles" to="/local_costmap_node/costmap/costmap"/>
+	  <remap from="~command" to="/base/diff_drive_controller/cmd_vel_avoid"/>
+		<param name="~costmap_parameter_source" value="/local_costmap_node/costmap"/>
+		<param name="~costmap_obstacle_treshold" value="100"/>
+		<param name="~slowdown_radious" value="3.0"/>
+		<param name="~stop_radious" value="0.6"/>
+		<param name="~collision_radious" value="0.25"/>
+	</node>
+
 	<node pkg="nodelet" type="nodelet" name="velocity_smoother_manager" args="manager"/>
 	<include file="$(find yocs_velocity_smoother)/launch/velocity_smoother.launch">
 		<arg name="node_name" value="velocity_smoother"/>
 		<arg name="nodelet_manager_name" value="velocity_smoother_manager"/>
 		<arg name="config_file" value="$(find tsukuba_bringup)/config/velocity_smoother/yocs_velocity_smoother.yaml" />
-		<arg name="raw_cmd_vel_topic" value="convert_cmd_vel" />
+		<arg name="raw_cmd_vel_topic" value="/base/diff_drive_controller/cmd_vel_avoid" />
 		<arg name="smooth_cmd_vel_topic" value="/base/diff_drive_controller/cmd_vel" />
 		<arg name="robot_cmd_vel_topic" value="/base/diff_drive_controller/cmd_vel" />
 		<arg name="odom_topic" value="/base/diff_drive_controller/odom" />

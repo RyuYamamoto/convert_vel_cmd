@@ -4,7 +4,7 @@ ConvertVelCmd::ConvertVelCmd(ros::NodeHandle nh)
 	: _nh(nh)
 {
 	ros::NodeHandle pnh("~");
-	pnh.param<std::string>("cmd_vel_topic", _cmd_vel_topic, "cmd_vel");
+	pnh.param<std::string>("cmd_vel_topic", _cmd_vel_topic, "/cmd_vel");
 
 	_vehicle_cmd_sub = _nh.subscribe("/vehicle_cmd", 10, &ConvertVelCmd::vehicle_cmd_callback, this);
 	_cmd_vel_pub = _nh.advertise<geometry_msgs::Twist>(_cmd_vel_topic, 10);
